@@ -1,13 +1,24 @@
 # AI Docs
 
-As you read this file, web scrap the contents of each link in the file into it's own `ai_docs/*.md` file.
-Prefer firecrawl for scraping fallback on default scraper.
+## Local Documentation
 
-## Instructions
+- **claude-code-hooks.md** - CLI hooks reference (settings.json configuration)
+- **claude-agent-sdk-typescript.md** - TypeScript Agent SDK reference (programmatic hooks with SubagentStart, agent_id, agent_type)
 
-- When you write the markdown files, don't skip any content - write exactly what was given to you into the file.
-- If you see an existing file related to the link, overwrite it with the new content.
+## External References
 
-## Resources
+### Claude Code & Agent SDK
+- https://platform.claude.com/docs/en/agent-sdk/typescript - TypeScript Agent SDK (SubagentStart hook, agent_id)
+- https://platform.claude.com/docs/en/agent-sdk/hooks - Agent SDK Hooks Reference
+- https://platform.claude.com/docs/en/agent-sdk/overview - Agent SDK Overview
+- https://docs.claude.com/en/docs/claude-code/sub-agents - Claude Code Sub-Agents
+- https://docs.claude.com/en/docs/claude-code/slash-commands - Slash Commands + Custom Slash Commands
+- https://docs.claude.com/en/docs/claude-code/skills - Claude Code Skills
+- https://docs.claude.com/en/docs/claude-code/mcp - Claude Code MCP Servers
+- https://docs.anthropic.com/en/docs/claude-code/hooks - Claude Code CLI Hooks
+- https://docs.claude.com/en/docs/claude-code/plugins - Claude Code Plugins
 
-https://docs.anthropic.com/en/docs/claude-code/hooks - Claude Code Hooks
+### Other AI APIs
+- https://blog.google/technology/google-deepmind/gemini-computer-use-model/ - Gemini 2.5 Computer Use
+- https://developers.openai.com/blog/realtime-api - Developer notes on the realtime api
+- https://developers.openai.com/blog/responses-api - OpenAI Responses API

@@ -6,6 +6,8 @@ export interface HookEvent {
   payload: Record<string, any>;
   chat?: any[];
   summary?: string;
+  agent_id?: string;
+  agent_type?: string;
   timestamp?: number;
 }
 

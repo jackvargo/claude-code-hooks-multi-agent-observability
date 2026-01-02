@@ -246,3 +246,7 @@ claude-output.json
 .claude/commands/feature.md
 
 specs/
+
+# Vective System config (local only)
+PRPs/config/
+PRPs/templates/

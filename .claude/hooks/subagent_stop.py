@@ -14,6 +14,7 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 from utils.constants import ensure_session_log_dir
+from utils.message_builder import build_subagent_message
 
 try:
     from dotenv import load_dotenv
@@ -30,45 +31,45 @@ def get_tts_script_path():
     # Get current script directory and construct utils/tts path
     script_dir = Path(__file__).parent
     tts_dir = script_dir / "utils" / "tts"
-    
+
     # Check for ElevenLabs API key (highest priority)
     if os.getenv('ELEVENLABS_API_KEY'):
         elevenlabs_script = tts_dir / "elevenlabs_tts.py"
         if elevenlabs_script.exists():
             return str(elevenlabs_script)
-    
+
     # Check for OpenAI API key (second priority)
     if os.getenv('OPENAI_API_KEY'):
         openai_script = tts_dir / "openai_tts.py"
         if openai_script.exists():
             return str(openai_script)
-    
+
     # Fall back to pyttsx3 (no API key required)
     pyttsx3_script = tts_dir / "pyttsx3_tts.py"
     if pyttsx3_script.exists():
         return str(pyttsx3_script)
-    
+
     return None
 
 
-def announce_subagent_completion():
-    """Announce subagent completion using the best available TTS service."""
+def announce_subagent_completion(input_data: dict, summary: str = None):
+    """Announce subagent completion using the best available TTS service with context."""
     try:
         tts_script = get_tts_script_path()
         if not tts_script:
             return  # No TTS scripts available
-        
-        # Use fixed message for subagent completion
-        completion_message = "Subagent Complete"
-        
+
+        # Build contextual subagent completion message
+        completion_message = build_subagent_message(input_data, summary)
+
         # Call the TTS script with the completion message
         subprocess.run([
             "uv", "run", tts_script, completion_message
-        ], 
+        ],
         capture_output=True,  # Suppress output
         timeout=10  # 10-second timeout
         )
-        
+
     except (subprocess.TimeoutExpired, subprocess.SubprocessError, FileNotFoundError):
         # Fail silently if TTS encounters issues
         pass
@@ -135,8 +136,8 @@ def main():
                 except Exception:
                     pass  # Fail silently
 
-        # Announce subagent completion via TTS
-        announce_subagent_completion()
+        # Announce subagent completion via TTS with context
+        announce_subagent_completion(input_data)
 
         sys.exit(0)
 

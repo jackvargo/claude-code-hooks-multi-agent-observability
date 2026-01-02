@@ -33,6 +33,18 @@
             {{ events.length }} events
           </span>
           
+          <!-- Group by Agents Toggle Button -->
+          <button
+            @click="groupByAgents = !groupByAgents"
+            class="p-3 mobile:p-1.5 rounded-lg transition-all duration-200 border backdrop-blur-sm shadow-lg hover:shadow-xl"
+            :class="groupByAgents
+              ? 'bg-white/40 border-white/60 hover:bg-white/50'
+              : 'bg-white/20 border-white/30 hover:bg-white/30 hover:border-white/50'"
+            :title="groupByAgents ? 'Switch to flat list view' : 'Group events by agents'"
+          >
+            <span class="text-2xl mobile:text-lg">👥</span>
+          </button>
+
           <!-- Filters Toggle Button -->
           <button
             @click="showFilters = !showFilters"
@@ -71,6 +83,7 @@
     <EventTimeline
       :events="events"
       :filters="filters"
+      :group-by-agents="groupByAgents"
       v-model:stick-to-bottom="stickToBottom"
     />
     
@@ -123,6 +136,7 @@ const filters = ref({
 const stickToBottom = ref(true);
 const showThemeManager = ref(false);
 const showFilters = ref(false);
+const groupByAgents = ref(true);  // Default ON per PRP requirements
 
 // Computed properties
 const isDark = computed(() => {

@@ -33,13 +33,17 @@
         </div>
         
         <!-- Mobile: Session + Event Type on second row -->
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-2 flex-wrap gap-1">
           <span class="text-xs text-[var(--theme-text-secondary)] px-1.5 py-0.5 rounded-full border bg-[var(--theme-bg-tertiary)]/50" :class="borderColorClass">
             {{ sessionIdShort }}
           </span>
           <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-bold bg-[var(--theme-primary)] text-white shadow-md">
             <span class="mr-1 text-sm">{{ hookEmoji }}</span>
             {{ event.hook_event_type }}
+          </span>
+          <span v-if="event.agent_id || event.agent_type" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm">
+            <span class="mr-0.5">🤖</span>
+            {{ event.agent_type && event.agent_id ? `${event.agent_type} (${event.agent_id})` : event.agent_type || `agent-${event.agent_id}` }}
           </span>
         </div>
       </div>
@@ -59,6 +63,10 @@
           <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-bold bg-[var(--theme-primary)] text-white shadow-lg">
             <span class="mr-1.5 text-base">{{ hookEmoji }}</span>
             {{ event.hook_event_type }}
+          </span>
+          <span v-if="event.agent_id || event.agent_type" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-md">
+            <span class="mr-1">🤖</span>
+            {{ event.agent_type && event.agent_id ? `${event.agent_type} (${event.agent_id})` : event.agent_type || `agent-${event.agent_id}` }}
           </span>
         </div>
         <span class="text-sm text-[var(--theme-text-tertiary)] font-semibold">
@@ -183,6 +191,7 @@ const hookEmoji = computed(() => {
     'Notification': '🔔',
     'Stop': '🛑',
     'SubagentStop': '👥',
+    'SubagentStart': '🚀',
     'PreCompact': '📦',
     'UserPromptSubmit': '💬'
   };

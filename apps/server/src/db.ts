@@ -31,11 +31,23 @@ export function initDatabase(): void {
     if (!hasChatColumn) {
       db.exec('ALTER TABLE events ADD COLUMN chat TEXT');
     }
-    
+
     // Check if summary column exists, add it if not (for migration)
     const hasSummaryColumn = columns.some((col: any) => col.name === 'summary');
     if (!hasSummaryColumn) {
       db.exec('ALTER TABLE events ADD COLUMN summary TEXT');
+    }
+
+    // Check if agent_id column exists, add it if not (for migration)
+    const hasAgentIdColumn = columns.some((col: any) => col.name === 'agent_id');
+    if (!hasAgentIdColumn) {
+      db.exec('ALTER TABLE events ADD COLUMN agent_id TEXT');
+    }
+
+    // Check if agent_type column exists, add it if not (for migration)
+    const hasAgentTypeColumn = columns.some((col: any) => col.name === 'agent_type');
+    if (!hasAgentTypeColumn) {
+      db.exec('ALTER TABLE events ADD COLUMN agent_type TEXT');
     }
   } catch (error) {
     // If the table doesn't exist yet, the CREATE TABLE above will handle it
@@ -106,10 +118,10 @@ export function initDatabase(): void {
 
 export function insertEvent(event: HookEvent): HookEvent {
   const stmt = db.prepare(`
-    INSERT INTO events (source_app, session_id, hook_event_type, payload, chat, summary, timestamp)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO events (source_app, session_id, hook_event_type, payload, chat, summary, agent_id, agent_type, timestamp)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-  
+
   const timestamp = event.timestamp || Date.now();
   const result = stmt.run(
     event.source_app,
@@ -118,9 +130,11 @@ export function insertEvent(event: HookEvent): HookEvent {
     JSON.stringify(event.payload),
     event.chat ? JSON.stringify(event.chat) : null,
     event.summary || null,
+    event.agent_id || null,
+    event.agent_type || null,
     timestamp
   );
-  
+
   return {
     ...event,
     id: result.lastInsertRowid as number,
@@ -142,14 +156,14 @@ export function getFilterOptions(): FilterOptions {
 
 export function getRecentEvents(limit: number = 100): HookEvent[] {
   const stmt = db.prepare(`
-    SELECT id, source_app, session_id, hook_event_type, payload, chat, summary, timestamp
+    SELECT id, source_app, session_id, hook_event_type, payload, chat, summary, agent_id, agent_type, timestamp
     FROM events
     ORDER BY timestamp DESC
     LIMIT ?
   `);
-  
+
   const rows = stmt.all(limit) as any[];
-  
+
   return rows.map(row => ({
     id: row.id,
     source_app: row.source_app,
@@ -158,6 +172,8 @@ export function getRecentEvents(limit: number = 100): HookEvent[] {
     payload: JSON.parse(row.payload),
     chat: row.chat ? JSON.parse(row.chat) : undefined,
     summary: row.summary || undefined,
+    agent_id: row.agent_id || undefined,
+    agent_type: row.agent_type || undefined,
     timestamp: row.timestamp
   })).reverse();
 }
@@ -207,11 +223,11 @@ export function updateTheme(id: string, updates: Partial<Theme>): boolean {
       if (key === 'isPublic') {
         return updates[key as keyof Theme] ? 1 : 0;
       }
-      return updates[key as keyof Theme];
+      return updates[key as keyof Theme] ?? null;
     });
   
   const stmt = db.prepare(`UPDATE themes SET ${setClause} WHERE id = ?`);
-  const result = stmt.run(...values, id);
+  const result = stmt.run(...(values as (string | number | null)[]), id);
   
   return result.changes > 0;
 }
