@@ -1,15 +1,33 @@
 import { initDatabase, insertEvent, getFilterOptions, getRecentEvents } from './db';
 import type { HookEvent } from './types';
-import { 
-  createTheme, 
-  updateThemeById, 
-  getThemeById, 
-  searchThemes, 
-  deleteThemeById, 
-  exportThemeById, 
+import {
+  createTheme,
+  updateThemeById,
+  getThemeById,
+  searchThemes,
+  deleteThemeById,
+  exportThemeById,
   importTheme,
-  getThemeStats 
+  getThemeStats
 } from './theme';
+
+// API Key for event ingestion
+const API_KEY = Bun.env.WATCHER_API_KEY;
+
+/**
+ * Validates API key from Authorization header
+ * Skips validation if no API key is configured (local dev)
+ */
+function validateApiKey(req: Request): boolean {
+  // Skip validation if no API key configured (local dev)
+  if (!API_KEY) return true;
+
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) return false;
+
+  const token = authHeader.slice(7);
+  return token === API_KEY;
+}
 
 // Initialize database
 initDatabase();
@@ -28,7 +46,7 @@ const server = Bun.serve({
     const headers = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     };
     
     // Handle preflight
@@ -38,9 +56,17 @@ const server = Bun.serve({
     
     // POST /events - Receive new events
     if (url.pathname === '/events' && req.method === 'POST') {
+      // Validate API key
+      if (!validateApiKey(req)) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { ...headers, 'Content-Type': 'application/json' }
+        });
+      }
+
       try {
         const event: HookEvent = await req.json();
-        
+
         // Validate required fields
         if (!event.source_app || !event.session_id || !event.hook_event_type || !event.payload) {
           return new Response(JSON.stringify({ error: 'Missing required fields' }), {

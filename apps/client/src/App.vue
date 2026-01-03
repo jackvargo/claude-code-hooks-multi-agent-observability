@@ -110,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useWebSocket } from './composables/useWebSocket';
 import { useThemes } from './composables/useThemes';
 import EventTimeline from './components/EventTimeline.vue';
@@ -122,8 +122,8 @@ import ThemeManager from './components/ThemeManager.vue';
 // WebSocket connection
 const { events, isConnected, error } = useWebSocket('ws://localhost:4000/stream');
 
-// Theme management
-const { state: themeState } = useThemes();
+// Theme management (initializes theme system)
+useThemes();
 
 // Filters
 const filters = ref({
@@ -138,12 +138,6 @@ const showThemeManager = ref(false);
 const showFilters = ref(false);
 const groupByAgents = ref(true);  // Default ON per PRP requirements
 
-// Computed properties
-const isDark = computed(() => {
-  return themeState.value.currentTheme === 'dark' || 
-         (themeState.value.isCustomTheme && 
-          themeState.value.customThemes.find(t => t.id === themeState.value.currentTheme)?.name.includes('dark'));
-});
 
 // Debug handler for theme manager
 const handleThemeManagerClick = () => {
