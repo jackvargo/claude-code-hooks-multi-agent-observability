@@ -128,14 +128,22 @@ def find_agent_id_for_tool(transcript_path: str, tool_use_id: str) -> str | None
 def send_event_to_server(event_data, server_url='http://localhost:4000/events'):
     """Send event data to the observability server."""
     try:
+        # Build headers
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Claude-Code-Hook/1.0'
+        }
+
+        # Add API key authorization if configured
+        api_key = os.environ.get('WATCHER_API_KEY', '')
+        if api_key:
+            headers['Authorization'] = f'Bearer {api_key}'
+
         # Prepare the request
         req = urllib.request.Request(
             server_url,
             data=json.dumps(event_data).encode('utf-8'),
-            headers={
-                'Content-Type': 'application/json',
-                'User-Agent': 'Claude-Code-Hook/1.0'
-            }
+            headers=headers
         )
         
         # Send the request
