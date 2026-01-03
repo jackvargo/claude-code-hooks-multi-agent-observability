@@ -1,0 +1,32 @@
+services:
+  agent-watcher:
+    image: ghcr.io/jackvargo/agent-watcher:latest
+    container_name: agent-watcher
+    restart: unless-stopped
+    environment:
+      - WATCHER_API_KEY=${WATCHER_API_KEY}
+    volumes:
+      - ~/data/agent-watcher:/data
+    networks:
+      - proxy
+    labels:
+      # Traefik base config
+      - "traefik.enable=true"
+      - "traefik.http.services.agent-watcher.loadbalancer.server.port=80"
+
+      # Main router (with Authentik)
+      - "traefik.http.routers.agent-watcher.rule=Host(`watcher.flipgoal.xyz`)"
+      - "traefik.http.routers.agent-watcher.entrypoints=websecure"
+      - "traefik.http.routers.agent-watcher.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.agent-watcher.middlewares=authentik@file"
+
+      # API router (no Authentik - uses API key)
+      - "traefik.http.routers.agent-watcher-api.rule=Host(`watcher.flipgoal.xyz`) && PathPrefix(`/events`)"
+      - "traefik.http.routers.agent-watcher-api.entrypoints=websecure"
+      - "traefik.http.routers.agent-watcher-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.agent-watcher-api.service=agent-watcher"
+      # No authentik middleware - server validates API key
+
+networks:
+  proxy:
+    external: true

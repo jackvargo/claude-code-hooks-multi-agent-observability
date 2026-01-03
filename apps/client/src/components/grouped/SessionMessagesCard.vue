@@ -20,7 +20,7 @@
       @scroll="handleScroll"
     >
       <!-- Display items using ExpandableEventEntry -->
-      <template v-for="(item, index) in displayItems" :key="index">
+      <template v-for="item in displayItems" :key="item.name + item.detail">
         <ExpandableEventEntry
           :type="item.type"
           :name="item.name"
@@ -136,7 +136,7 @@ const getToolDuration = (tool: ConsolidatedToolCall): string | undefined => {
 };
 
 // Helper to calculate duration from event pair
-const calculateDuration = (preEvent: HookEvent, postEvent: HookEvent | null): string | undefined => {
+const calculateDuration = (preEvent: HookEvent, postEvent: HookEvent | null | undefined): string | undefined => {
   if (!postEvent) return undefined;
   const pre = preEvent.timestamp;
   const post = postEvent.timestamp;
