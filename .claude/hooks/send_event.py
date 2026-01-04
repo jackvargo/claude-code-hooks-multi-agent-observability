@@ -166,7 +166,9 @@ def main():
     parser = argparse.ArgumentParser(description='Send Claude Code hook events to observability server')
     parser.add_argument('--source-app', required=False, default='', help='Source application name (optional - reads from PROJECT_NAME env var if not provided)')
     parser.add_argument('--event-type', required=True, help='Hook event type (PreToolUse, PostToolUse, etc.)')
-    parser.add_argument('--server-url', default='http://localhost:4000/events', help='Server URL')
+    # Server URL: CLI arg > WATCHER_SERVER_URL env var > localhost default
+    default_server = os.environ.get('WATCHER_SERVER_URL', 'http://localhost:4000/events')
+    parser.add_argument('--server-url', default=default_server, help='Server URL (default: WATCHER_SERVER_URL env var or localhost:4000)')
     parser.add_argument('--add-chat', action='store_true', help='Include chat transcript if available')
     parser.add_argument('--summarize', action='store_true', help='Generate AI summary of the event')
 
