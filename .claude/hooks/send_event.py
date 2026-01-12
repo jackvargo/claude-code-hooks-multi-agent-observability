@@ -128,14 +128,22 @@ def find_agent_id_for_tool(transcript_path: str, tool_use_id: str) -> str | None
 def send_event_to_server(event_data, server_url='http://localhost:4000/events'):
     """Send event data to the observability server."""
     try:
+        # Build headers
+        headers = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Claude-Code-Hook/1.0'
+        }
+
+        # Add API key authorization if configured
+        api_key = os.environ.get('WATCHER_API_KEY', '')
+        if api_key:
+            headers['Authorization'] = f'Bearer {api_key}'
+
         # Prepare the request
         req = urllib.request.Request(
             server_url,
             data=json.dumps(event_data).encode('utf-8'),
-            headers={
-                'Content-Type': 'application/json',
-                'User-Agent': 'Claude-Code-Hook/1.0'
-            }
+            headers=headers
         )
         
         # Send the request
@@ -158,7 +166,9 @@ def main():
     parser = argparse.ArgumentParser(description='Send Claude Code hook events to observability server')
     parser.add_argument('--source-app', required=False, default='', help='Source application name (optional - reads from PROJECT_NAME env var if not provided)')
     parser.add_argument('--event-type', required=True, help='Hook event type (PreToolUse, PostToolUse, etc.)')
-    parser.add_argument('--server-url', default='http://localhost:4000/events', help='Server URL')
+    # Server URL: CLI arg > WATCHER_SERVER_URL env var > localhost default
+    default_server = os.environ.get('WATCHER_SERVER_URL', 'http://localhost:4000/events')
+    parser.add_argument('--server-url', default=default_server, help='Server URL (default: WATCHER_SERVER_URL env var or localhost:4000)')
     parser.add_argument('--add-chat', action='store_true', help='Include chat transcript if available')
     parser.add_argument('--summarize', action='store_true', help='Generate AI summary of the event')
 
