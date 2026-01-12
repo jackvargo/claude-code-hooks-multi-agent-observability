@@ -95,6 +95,8 @@ GroupedEventView.vue
 - `useEventGrouping.ts`: Transforms flat events into Project → Session → Agent hierarchy
 - `useToolConsolidation.ts`: Matches PreToolUse to PostToolUse by `tool_use_id`
 - `useEventColors.ts`: Deterministic color assignment via hash
+- `useServerConfig.ts`: Multi-server configuration with health monitoring (singleton pattern)
+- `useWebSocket.ts`: WebSocket connection with first-message authentication
 
 ### Event Routing Logic
 - Events with `agent_id` route to agent cards (unless Task tool)
@@ -105,6 +107,7 @@ GroupedEventView.vue
 
 | Date | Change | Author |
 |------|--------|--------|
+| 2025-01-11 | PRP-006: Multi-server configuration with WebSocket first-message authentication | Claude |
 | 2024-12-29 | PRP-004 Iteration 1: Unified ExpandableEventEntry component for harmonized session/agent views | Claude |
 | 2024-12-29 | Agent Grouping Visualization (PRP-004) | Claude |
 | 2024-12-28 | Agent ID correlation feature (PRP-002) | Claude |

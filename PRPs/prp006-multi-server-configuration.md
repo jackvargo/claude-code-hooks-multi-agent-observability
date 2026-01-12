@@ -1,7 +1,7 @@
 # PRP-006: Multi-Server Configuration with Intelligent Fallback
 
 **Type**: single
-**Status**: execution-complete
+**Status**: committed
 
 ## Goal
 
