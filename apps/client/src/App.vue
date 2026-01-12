@@ -9,30 +9,36 @@
             Multi-Agent Observability
           </h1>
         </div>
-        
+
         <!-- Connection Status -->
         <div class="mobile:w-full mobile:justify-center flex items-center space-x-1.5">
-          <div v-if="isConnected" class="flex items-center space-x-1.5">
-            <span class="relative flex h-3 w-3">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-            </span>
-            <span class="text-base mobile:text-sm text-white font-semibold drop-shadow-md">Connected</span>
-          </div>
-          <div v-else class="flex items-center space-x-1.5">
-            <span class="relative flex h-3 w-3">
-              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-            </span>
-            <span class="text-base mobile:text-sm text-white font-semibold drop-shadow-md">Disconnected</span>
-          </div>
+          <!-- Health indicator -->
+          <span class="relative flex h-3 w-3">
+            <span v-if="isConnected" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3" :class="isConnected ? 'bg-green-500' : 'bg-red-500'"></span>
+          </span>
+
+          <!-- Server alias -->
+          <span class="text-base mobile:text-sm text-white font-semibold drop-shadow-md">
+            {{ activeServer?.alias ?? 'Connecting...' }}
+          </span>
+
+          <!-- Gear icon for server config -->
+          <button
+            @click="showServerConfig = true"
+            class="p-1 rounded hover:bg-white/20 transition-colors"
+            title="Configure servers"
+          >
+            <span class="text-lg">⚙️</span>
+          </button>
         </div>
-        
+
         <!-- Event Count and Theme Toggle -->
         <div class="mobile:w-full mobile:justify-center flex items-center space-x-2">
           <span class="text-base mobile:text-sm text-white font-semibold drop-shadow-md bg-[var(--theme-primary-dark)] px-3 py-1.5 rounded-full border border-white/30">
             {{ events.length }} events
           </span>
-          
+
           <!-- Group by Agents Toggle Button -->
           <button
             @click="groupByAgents = !groupByAgents"
@@ -53,7 +59,7 @@
           >
             <span class="text-2xl mobile:text-lg">📊</span>
           </button>
-          
+
           <!-- Theme Manager Button -->
           <button
             @click="handleThemeManagerClick"
@@ -65,20 +71,20 @@
         </div>
       </div>
     </header>
-    
+
     <!-- Filters -->
     <FilterPanel
       v-if="showFilters"
       :filters="filters"
       @update:filters="filters = $event"
     />
-    
+
     <!-- Live Pulse Chart -->
     <LivePulseChart
       :events="events"
       :filters="filters"
     />
-    
+
     <!-- Timeline -->
     <EventTimeline
       :events="events"
@@ -86,13 +92,13 @@
       :group-by-agents="groupByAgents"
       v-model:stick-to-bottom="stickToBottom"
     />
-    
+
     <!-- Stick to bottom button -->
     <StickScrollButton
       :stick-to-bottom="stickToBottom"
       @toggle="stickToBottom = !stickToBottom"
     />
-    
+
     <!-- Error message -->
     <div
       v-if="error"
@@ -100,30 +106,55 @@
     >
       {{ error }}
     </div>
-    
+
     <!-- Theme Manager -->
-    <ThemeManager 
+    <ThemeManager
       :is-open="showThemeManager"
       @close="showThemeManager = false"
+    />
+
+    <!-- Server Config Panel -->
+    <ServerConfigPanel
+      :is-open="showServerConfig"
+      @close="showServerConfig = false"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useWebSocket } from './composables/useWebSocket';
 import { useThemes } from './composables/useThemes';
+import { useServerConfig } from './composables/useServerConfig';
 import EventTimeline from './components/EventTimeline.vue';
 import FilterPanel from './components/FilterPanel.vue';
 import StickScrollButton from './components/StickScrollButton.vue';
 import LivePulseChart from './components/LivePulseChart.vue';
 import ThemeManager from './components/ThemeManager.vue';
+import ServerConfigPanel from './components/ServerConfigPanel.vue';
 
-// WebSocket connection
-const { events, isConnected, error } = useWebSocket('ws://localhost:4000/stream');
+// WebSocket connection - dynamic URL with fallback for initial load
+const initialWsUrl = (() => {
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${wsProtocol}//${window.location.host}/stream`;
+})();
+const { events, isConnected, error, reconnect } = useWebSocket(initialWsUrl);
 
 // Theme management (initializes theme system)
 useThemes();
+
+// Server configuration
+const {
+  activeServer,
+  activeWsUrl
+} = useServerConfig();
+
+// Watch for server changes and reconnect (passing apiKey for WebSocket auth)
+watch([activeWsUrl, activeServer], ([newUrl, newServer]) => {
+  if (newUrl) {
+    reconnect(newUrl, newServer?.apiKey);
+  }
+}, { deep: true });
 
 // Filters
 const filters = ref({
@@ -137,6 +168,7 @@ const stickToBottom = ref(true);
 const showThemeManager = ref(false);
 const showFilters = ref(false);
 const groupByAgents = ref(true);  // Default ON per PRP requirements
+const showServerConfig = ref(false);
 
 
 // Debug handler for theme manager

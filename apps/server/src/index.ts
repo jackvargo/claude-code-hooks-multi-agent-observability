@@ -35,6 +35,9 @@ initDatabase();
 // Store WebSocket clients
 const wsClients = new Set<any>();
 
+// Track authenticated WebSocket clients (for first-message auth pattern)
+const authenticatedClients = new WeakSet<any>();
+
 // Create Bun server with HTTP and WebSocket support
 const server = Bun.serve({
   port: 4000,
@@ -78,14 +81,16 @@ const server = Bun.serve({
         // Insert event into database
         const savedEvent = insertEvent(event);
         
-        // Broadcast to all WebSocket clients
+        // Broadcast to all authenticated WebSocket clients
         const message = JSON.stringify({ type: 'event', data: savedEvent });
         wsClients.forEach(client => {
-          try {
-            client.send(message);
-          } catch (err) {
-            // Client disconnected, remove from set
-            wsClients.delete(client);
+          if (authenticatedClients.has(client)) {
+            try {
+              client.send(message);
+            } catch (err) {
+              // Client disconnected, remove from set
+              wsClients.delete(client);
+            }
           }
         });
         
@@ -312,22 +317,70 @@ const server = Bun.serve({
     open(ws) {
       console.log('WebSocket client connected');
       wsClients.add(ws);
-      
-      // Send recent events on connection
-      const events = getRecentEvents(50);
-      ws.send(JSON.stringify({ type: 'initial', data: events }));
+
+      // If no API key configured, auto-authenticate (local dev mode)
+      if (!API_KEY) {
+        authenticatedClients.add(ws);
+        // Send initial events immediately for local dev
+        const events = getRecentEvents(50);
+        ws.send(JSON.stringify({ type: 'initial', data: events }));
+      } else {
+        // Set auth timeout - close if not authenticated within 5 seconds
+        setTimeout(() => {
+          if (!authenticatedClients.has(ws)) {
+            console.log('WebSocket auth timeout');
+            ws.close(4001, 'Authentication timeout');
+          }
+        }, 5000);
+      }
     },
-    
+
     message(ws, message) {
-      // Handle any client messages if needed
-      console.log('Received message:', message);
+      try {
+        const data = JSON.parse(message.toString());
+
+        // Handle auth message
+        if (data.type === 'auth') {
+          if (!API_KEY) {
+            // No API key configured, auto-success
+            authenticatedClients.add(ws);
+            ws.send(JSON.stringify({ type: 'auth_success' }));
+            const events = getRecentEvents(50);
+            ws.send(JSON.stringify({ type: 'initial', data: events }));
+          } else if (data.token === API_KEY) {
+            // Valid token
+            console.log('WebSocket client authenticated');
+            authenticatedClients.add(ws);
+            ws.send(JSON.stringify({ type: 'auth_success' }));
+            const events = getRecentEvents(50);
+            ws.send(JSON.stringify({ type: 'initial', data: events }));
+          } else {
+            // Invalid token
+            console.log('WebSocket auth failed: invalid token');
+            ws.send(JSON.stringify({ type: 'auth_failed', error: 'Invalid token' }));
+            ws.close(4001, 'Authentication failed');
+          }
+          return;
+        }
+
+        // For other messages, only process if authenticated
+        if (!authenticatedClients.has(ws)) {
+          ws.send(JSON.stringify({ type: 'error', error: 'Not authenticated' }));
+          return;
+        }
+
+        console.log('Received message:', message);
+      } catch (err) {
+        console.error('Failed to parse WebSocket message:', err);
+      }
     },
-    
+
     close(ws) {
       console.log('WebSocket client disconnected');
       wsClients.delete(ws);
+      // WeakSet auto-cleans up authenticatedClients when ws is garbage collected
     },
-    
+
     error(ws, error) {
       console.error('WebSocket error:', error);
       wsClients.delete(ws);
