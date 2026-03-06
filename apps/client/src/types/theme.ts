@@ -1,6 +1,6 @@
 // Theme type definitions
 
-export type ThemeName = 'light' | 'dark' | 'modern' | 'earth' | 'glass' | 'high-contrast' | 'dark-blue' | 'colorblind-friendly' | 'ocean';
+export type ThemeName = 'light' | 'dark' | 'modern' | 'earth' | 'glass' | 'high-contrast' | 'dark-blue' | 'colorblind-friendly' | 'ocean' | 'nerve-dark' | 'nerve-light';
 
 export interface ThemeColors {
   // Primary colors
@@ -177,6 +177,8 @@ export const THEME_COLOR_KEYS: ThemeColorKey[] = [
 ];
 
 export const PREDEFINED_THEME_NAMES: ThemeName[] = [
+  'nerve-dark',
+  'nerve-light',
   'light',
   'dark',
   'modern',
@@ -194,6 +196,22 @@ export const RGBA_REGEX = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d?(?:\.\d+)?)
 
 // Theme metadata
 export const THEME_METADATA = {
+  'nerve-dark': {
+    name: 'nerve-dark' as ThemeName,
+    displayName: 'Nerve Dark',
+    description: 'Vective-branded dark theme — mission control for agents',
+    cssClass: 'theme-nerve-dark',
+    category: 'vective',
+    accessibility: 'low-light',
+  },
+  'nerve-light': {
+    name: 'nerve-light' as ThemeName,
+    displayName: 'Nerve Light',
+    description: 'Vective-branded light theme — clean operational clarity',
+    cssClass: 'theme-nerve-light',
+    category: 'vective',
+    accessibility: 'high-contrast',
+  },
   light: {
     name: 'light' as ThemeName,
     displayName: 'Light',

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Nerve Mark — Dark variant for light backgrounds -->
+
+  <!-- Outer signal ring -->
+  <circle cx="256" cy="256" r="240" fill="none" stroke="#0F172A" stroke-width="4" stroke-dasharray="24 12" opacity="0.3"/>
+
+  <!-- Inner hex border -->
+  <line x1="74" y1="362" x2="74" y2="158" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+  <line x1="74" y1="158" x2="120" y2="132" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+  <line x1="392" y1="132" x2="438" y2="158" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+  <line x1="438" y1="158" x2="438" y2="362" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+  <line x1="438" y1="362" x2="256" y2="468" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+  <line x1="256" y1="468" x2="74" y2="362" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+  <line x1="155" y1="112" x2="256" y2="52" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+  <line x1="256" y1="52" x2="358" y2="112" stroke="#0F172A" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Sacred V -->
+  <path d="M 100 108 L 256 392 L 412 108"
+        fill="none"
+        stroke="#0891B2"
+        stroke-width="48"
+        stroke-linecap="butt"
+        stroke-linejoin="miter"
+        stroke-miterlimit="10"/>
+</svg>

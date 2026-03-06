@@ -1,4 +1,119 @@
 /* Theme System - CSS Custom Properties */
+/* Vective Brand Tokens: https://vectiveai.com/brand/ */
+
+/* ==========================================================================
+   NERVE DARK — Primary/Default Vective Theme
+   Background: Slate Deep (#0F172A) · Accent: Authority Cyan (#0891B2)
+   Brand Cyan (#22D3EE) for decorative/highlight · Emerald for status only
+   ========================================================================== */
+.theme-nerve-dark {
+  /* Primary colors — Authority Cyan for functional UI */
+  --theme-primary: #0891B2;
+  --theme-primary-hover: #0E7490;
+  --theme-primary-light: #164E63;
+  --theme-primary-dark: #06B6D4;
+
+  /* Background colors — Slate Deep palette */
+  --theme-bg-primary: #0F172A;
+  --theme-bg-secondary: #1E293B;
+  --theme-bg-tertiary: #334155;
+  --theme-bg-quaternary: #475569;
+
+  /* Text colors */
+  --theme-text-primary: #F1F5F9;
+  --theme-text-secondary: #CBD5E1;
+  --theme-text-tertiary: #94A3B8;
+  --theme-text-quaternary: #64748B;
+
+  /* Border colors */
+  --theme-border-primary: #334155;
+  --theme-border-secondary: #475569;
+  --theme-border-tertiary: #64748B;
+
+  /* Accent colors — Emerald for success (brand canon) */
+  --theme-accent-success: #059669;
+  --theme-accent-warning: #D97706;
+  --theme-accent-error: #DC2626;
+  --theme-accent-info: #22D3EE;
+
+  /* Shadow colors */
+  --theme-shadow: rgba(0, 0, 0, 0.6);
+  --theme-shadow-lg: rgba(0, 0, 0, 0.8);
+
+  /* Interactive states */
+  --theme-hover-bg: rgba(8, 145, 178, 0.12);
+  --theme-active-bg: rgba(8, 145, 178, 0.2);
+  --theme-focus-ring: #22D3EE;
+
+  /* Theme transitions */
+  --theme-transition: all 0.2s ease-in-out;
+  --theme-transition-fast: all 0.1s ease-in-out;
+
+  /* Vective brand extensions */
+  --nerve-brand-cyan: #22D3EE;
+  --nerve-authority-cyan: #0891B2;
+  --nerve-life-emerald: #059669;
+  --nerve-glow: rgba(34, 211, 238, 0.15);
+  --nerve-header-gradient-from: #0F172A;
+  --nerve-header-gradient-to: #164E63;
+}
+
+/* ==========================================================================
+   NERVE LIGHT — Alternative Vective Theme
+   Background: White/Slate Wash · Accent: Authority Cyan (#0891B2)
+   Uses brand surface palette from vectiveai.com/brand
+   ========================================================================== */
+.theme-nerve-light {
+  /* Primary colors — Authority Cyan */
+  --theme-primary: #0891B2;
+  --theme-primary-hover: #0E7490;
+  --theme-primary-light: #CFFAFE;
+  --theme-primary-dark: #155E75;
+
+  /* Background colors — Brand surface palette */
+  --theme-bg-primary: #FFFFFF;
+  --theme-bg-secondary: #F8FAFC;
+  --theme-bg-tertiary: #F1F5F9;
+  --theme-bg-quaternary: #E2E8F0;
+
+  /* Text colors — Slate Deep hierarchy */
+  --theme-text-primary: #0F172A;
+  --theme-text-secondary: #334155;
+  --theme-text-tertiary: #64748B;
+  --theme-text-quaternary: #94A3B8;
+
+  /* Border colors — Steel Border palette */
+  --theme-border-primary: #E2E8F0;
+  --theme-border-secondary: #CBD5E1;
+  --theme-border-tertiary: #94A3B8;
+
+  /* Accent colors */
+  --theme-accent-success: #059669;
+  --theme-accent-warning: #D97706;
+  --theme-accent-error: #DC2626;
+  --theme-accent-info: #0891B2;
+
+  /* Shadow colors */
+  --theme-shadow: rgba(15, 23, 42, 0.08);
+  --theme-shadow-lg: rgba(15, 23, 42, 0.2);
+
+  /* Interactive states */
+  --theme-hover-bg: rgba(8, 145, 178, 0.06);
+  --theme-active-bg: rgba(8, 145, 178, 0.12);
+  --theme-focus-ring: #0891B2;
+
+  /* Theme transitions */
+  --theme-transition: all 0.2s ease-in-out;
+  --theme-transition-fast: all 0.1s ease-in-out;
+
+  /* Vective brand extensions */
+  --nerve-brand-cyan: #22D3EE;
+  --nerve-authority-cyan: #0891B2;
+  --nerve-life-emerald: #059669;
+  --nerve-glow: rgba(8, 145, 178, 0.1);
+  --nerve-header-gradient-from: #0891B2;
+  --nerve-header-gradient-to: #0E7490;
+}
 
 /* Default theme variables (Light theme) */
 :root {

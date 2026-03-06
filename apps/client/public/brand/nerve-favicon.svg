@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Nerve Favicon — Simplified V at small sizes (brand canon: no full mark below 32px) -->
+  <rect width="32" height="32" rx="6" fill="#0F172A"/>
+  <path d="M 6 7 L 16 25 L 26 7"
+        fill="none"
+        stroke="#22D3EE"
+        stroke-width="3.5"
+        stroke-linecap="butt"
+        stroke-linejoin="miter"
+        stroke-miterlimit="10"/>
+</svg>

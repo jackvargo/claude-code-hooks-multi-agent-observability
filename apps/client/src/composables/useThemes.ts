@@ -15,6 +15,72 @@ import { PREDEFINED_THEME_NAMES, COLOR_REGEX, RGBA_REGEX } from '../types/theme'
 
 // Predefined themes configuration
 const PREDEFINED_THEMES: Record<ThemeName, PredefinedTheme> = {
+  'nerve-dark': {
+    name: 'nerve-dark',
+    displayName: 'Nerve Dark',
+    description: 'Vective-branded dark theme — mission control for agents',
+    cssClass: 'theme-nerve-dark',
+    preview: { primary: '#0F172A', secondary: '#1E293B', accent: '#0891B2' },
+    colors: {
+      primary: '#0891B2',
+      primaryHover: '#0E7490',
+      primaryLight: '#164E63',
+      primaryDark: '#06B6D4',
+      bgPrimary: '#0F172A',
+      bgSecondary: '#1E293B',
+      bgTertiary: '#334155',
+      bgQuaternary: '#475569',
+      textPrimary: '#F1F5F9',
+      textSecondary: '#CBD5E1',
+      textTertiary: '#94A3B8',
+      textQuaternary: '#64748B',
+      borderPrimary: '#334155',
+      borderSecondary: '#475569',
+      borderTertiary: '#64748B',
+      accentSuccess: '#059669',
+      accentWarning: '#D97706',
+      accentError: '#DC2626',
+      accentInfo: '#22D3EE',
+      shadow: 'rgba(0, 0, 0, 0.6)',
+      shadowLg: 'rgba(0, 0, 0, 0.8)',
+      hoverBg: 'rgba(8, 145, 178, 0.12)',
+      activeBg: 'rgba(8, 145, 178, 0.2)',
+      focusRing: '#22D3EE'
+    }
+  },
+  'nerve-light': {
+    name: 'nerve-light',
+    displayName: 'Nerve Light',
+    description: 'Vective-branded light theme — clean operational clarity',
+    cssClass: 'theme-nerve-light',
+    preview: { primary: '#FFFFFF', secondary: '#F8FAFC', accent: '#0891B2' },
+    colors: {
+      primary: '#0891B2',
+      primaryHover: '#0E7490',
+      primaryLight: '#CFFAFE',
+      primaryDark: '#155E75',
+      bgPrimary: '#FFFFFF',
+      bgSecondary: '#F8FAFC',
+      bgTertiary: '#F1F5F9',
+      bgQuaternary: '#E2E8F0',
+      textPrimary: '#0F172A',
+      textSecondary: '#334155',
+      textTertiary: '#64748B',
+      textQuaternary: '#94A3B8',
+      borderPrimary: '#E2E8F0',
+      borderSecondary: '#CBD5E1',
+      borderTertiary: '#94A3B8',
+      accentSuccess: '#059669',
+      accentWarning: '#D97706',
+      accentError: '#DC2626',
+      accentInfo: '#0891B2',
+      shadow: 'rgba(15, 23, 42, 0.08)',
+      shadowLg: 'rgba(15, 23, 42, 0.2)',
+      hoverBg: 'rgba(8, 145, 178, 0.06)',
+      activeBg: 'rgba(8, 145, 178, 0.12)',
+      focusRing: '#0891B2'
+    }
+  },
   light: {
     name: 'light',
     displayName: 'Light',
@@ -315,9 +381,9 @@ const PREDEFINED_THEMES: Record<ThemeName, PredefinedTheme> = {
 };
 
 export function useThemes() {
-  // State
+  // State — Nerve Dark is the default/primary theme
   const state = ref<ThemeState>({
-    currentTheme: 'light',
+    currentTheme: 'nerve-dark',
     customThemes: [],
     isCustomTheme: false,
     isLoading: false,
@@ -374,8 +440,8 @@ export function useThemes() {
     if (themeData) {
       document.documentElement.classList.add(themeData.cssClass);
       
-      // For backward compatibility with existing dark mode
-      if (themeName === 'dark') {
+      // For backward compatibility with existing dark mode (Tailwind)
+      if (themeName === 'dark' || themeName === 'nerve-dark') {
         document.documentElement.classList.add('dark');
       } else {
         document.documentElement.classList.remove('dark');
@@ -614,9 +680,9 @@ export function useThemes() {
     if (savedTheme) {
       setTheme(savedTheme);
     } else {
-      // Detect system preference
+      // Default to Nerve Dark (Vective brand); fall back to Nerve Light for light-preference users
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setTheme(prefersDark ? 'dark' : 'light');
+      setTheme(prefersDark ? 'nerve-dark' : 'nerve-light');
     }
   };
 

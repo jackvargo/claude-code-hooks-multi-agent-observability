@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Nerve Apple Touch Icon — Full mark on slate deep background -->
+  <rect width="180" height="180" rx="40" fill="#0F172A"/>
+
+  <!-- Hex border (scaled) -->
+  <line x1="26" y1="127" x2="26" y2="56" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="26" y1="56" x2="42" y2="47" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="138" y1="47" x2="154" y2="56" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="154" y1="56" x2="154" y2="127" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="154" y1="127" x2="90" y2="164" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="90" y1="164" x2="26" y2="127" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="55" y1="40" x2="90" y2="18" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="90" y1="18" x2="126" y2="40" stroke="#0891B2" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- Sacred V -->
+  <path d="M 35 38 L 90 138 L 145 38"
+        fill="none"
+        stroke="#22D3EE"
+        stroke-width="17"
+        stroke-linecap="butt"
+        stroke-linejoin="miter"
+        stroke-miterlimit="10"/>
+</svg>
